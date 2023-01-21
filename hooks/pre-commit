@@ -9,11 +9,16 @@ else
 fi
 
 if [ -x "$(command -v cfn-dia)" ]; then 
+    echo '<ul>' > docs/index.html
     echo "Generating diagrams..."
     for i in cloudformation/**/*.cloudformation.yaml; do
-        cfn-diagram html -t "$i" -o "docs/${i##*/}"
-        git add "docs"
+        NAME="${i##*/}"
+        cfn-diagram html -t "$i" -o "docs/$NAME"
+        LINK_NAME="https://cnboonhan.github.io/aws-knowledge-base/$NAME"
+        echo "<li><a href=\"$LINK_NAME\">$LINK_NAME</a></li>" >> docs/index.html
     done
+    echo '</ul>' >> docs/index.html
+    git add "docs"
 else
     echo "No cfn-diagram found. Skipping architecture diagram generation.."
 fi
