@@ -32,14 +32,18 @@ Resources:
     Properties:
       VpcId: !Ref BaseVPC
       CidrBlock: 10.0.0.0/19
-      AvailabilityZone: ap-southeast-1a
+      AvailabilityZone: !Select 
+        - 0
+        - Fn::GetAZs: !Ref 'AWS::Region'
 
   SubnetGroupA2:
     Type: AWS::EC2::Subnet
     Properties:
       VpcId: !Ref BaseVPC
       CidrBlock: 10.0.32.0/19
-      AvailabilityZone: ap-southeast-1b
+      AvailabilityZone: !Select 
+        - 1
+        - Fn::GetAZs: !Ref 'AWS::Region'
 
   SubnetGroupB1:
     Type: AWS::EC2::Subnet
@@ -47,7 +51,9 @@ Resources:
     Properties:
       VpcId: !Ref BaseVPC
       CidrBlock: 10.0.64.0/19
-      AvailabilityZone: ap-southeast-1a
+      AvailabilityZone: !Select 
+        - 0
+        - Fn::GetAZs: !Ref 'AWS::Region'
 
   SubnetGroupB2:
     Type: AWS::EC2::Subnet
@@ -55,7 +61,9 @@ Resources:
     Properties:
       VpcId: !Ref BaseVPC
       CidrBlock: 10.0.96.0/19
-      AvailabilityZone: ap-southeast-1b
+      AvailabilityZone: !Select 
+        - 1
+        - Fn::GetAZs: !Ref 'AWS::Region'
 
   SubnetGroupC1:
     Type: AWS::EC2::Subnet
@@ -63,7 +71,9 @@ Resources:
     Properties:
       VpcId: !Ref BaseVPC
       CidrBlock: 10.0.128.0/19
-      AvailabilityZone: ap-southeast-1a
+      AvailabilityZone: !Select 
+        - 0
+        - Fn::GetAZs: !Ref 'AWS::Region'
 
   SubnetGroupC2:
     Type: AWS::EC2::Subnet
@@ -71,7 +81,9 @@ Resources:
     Properties:
       VpcId: !Ref BaseVPC
       CidrBlock: 10.0.160.0/19
-      AvailabilityZone: ap-southeast-1b
+      AvailabilityZone: !Select 
+        - 1
+        - Fn::GetAZs: !Ref 'AWS::Region'
 
   SubnetGroupD1:
     Type: AWS::EC2::Subnet
@@ -79,7 +91,9 @@ Resources:
     Properties:
       VpcId: !Ref BaseVPC
       CidrBlock: 10.0.192.0/19
-      AvailabilityZone: ap-southeast-1a
+      AvailabilityZone: !Select 
+        - 0
+        - Fn::GetAZs: !Ref 'AWS::Region'
 
   SubnetGroupD2:
     Type: AWS::EC2::Subnet
@@ -87,4 +101,6 @@ Resources:
     Properties:
       VpcId: !Ref BaseVPC
       CidrBlock: 10.0.224.0/19
-      AvailabilityZone: ap-southeast-1b
+      AvailabilityZone: !Select 
+        - 1
+        - Fn::GetAZs: !Ref 'AWS::Region'
