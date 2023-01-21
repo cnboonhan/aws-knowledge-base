@@ -9,10 +9,10 @@ else
 fi
 
 if [ -x "$(command -v cfn-dia)" ]; then 
-    echo "Generating diagrams.."
+    echo "Generating diagrams..."
     for i in cloudformation/**/*.cloudformation.yaml; do
-        cfn-diagram html -t "$i" -o "architecture/${i##*/}"
-        git add "architecture"
+        cfn-diagram html -t "$i" -o "docs/${i##*/}"
+        git add "docs"
     done
 else
     echo "No cfn-diagram found. Skipping architecture diagram generation.."
