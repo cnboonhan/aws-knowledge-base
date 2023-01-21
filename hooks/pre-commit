@@ -1,0 +1,19 @@
+#!/bin/bash
+shopt -s globstar
+
+if [ -x "$(command -v cfn-lint)" ]; then 
+    cfn-lint cloudformation/**/*.cloudformation.yaml
+    git add "cloudformation"
+else
+    echo "No cfn-lint found. Skipping linting.."
+fi
+
+if [ -x "$(command -v cfn-dia)" ]; then 
+    echo "Generating diagrams into docs/architecture.."
+    for i in cloudformation/**/*.cloudformation.yaml; do
+        cfn-diagram html -t "$i" -o "docs/architecture/${i##*/}"
+        git add "docs/architecture"
+    done
+else
+    echo "No cfn-diagram found. Skipping architecture diagram generation.."
+fi
