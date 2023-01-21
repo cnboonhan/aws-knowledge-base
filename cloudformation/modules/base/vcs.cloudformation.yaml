@@ -1,0 +1,47 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Resources:
+  VcsRepository:
+    Type: AWS::CodeCommit::Repository
+    Properties:
+      RepositoryName: !Sub Vcs-${AWS::AccountId}
+
+  VcsDeploymentPipeline:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Artifacts:
+        Type: NO_ARTIFACTS
+      ServiceRole: !GetAtt CodeBuildRole.Arn
+      Name: CloudformationDeploymentPipeline
+      Environment:
+        Type: LINUX_CONTAINER
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/standard:6.0
+      Source:
+        Type: CODECOMMIT
+        Location: !Ref VcsRepository
+
+  CodeBuildRole:
+    Type: AWS::IAM::Role
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: ["sts:AssumeRole"]
+            Effect: Allow
+            Principal:
+              Service: [codebuild.amazonaws.com]
+        Version: "2012-10-17"
+      Path: /
+      Policies:
+        - PolicyName: CodeBuildAccess
+          PolicyDocument:
+            Version: "2012-10-17"
+            Statement:
+              - Action:
+                  - "logs:*"
+                  - "ec2:DescribeSubnets"
+                  - "ec2:DescribeSecurityGroups"
+                  - "ec2:DescribeDhcpOptions"
+                  - "ec2:DescribeVpcs"
+                Effect: Allow
+                Resource: "*"
