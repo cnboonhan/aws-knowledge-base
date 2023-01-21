@@ -5,5 +5,6 @@ This repository intends to be an iterative collection of personal knowledge of A
 ## Git Hooks
 the `hooks` folder contains useful tools to populate documents and lint. To use them, you have to apply them manually to the `.git` folder.
 ```
-ln -s hooks/pre-commit .git/hooks/pre-commit
+# Run from the root directory of this repository
+find $PWD/hooks -type f | xargs -I '{}' ln -s '{}' $PWD/.git/hooks
 ```
