@@ -90,10 +90,11 @@ Resources:
                       while read p; do
                         [ -f /tmp/template.yaml ] && rm /tmp/template.yaml
                         [ -f /tmp/template.deploy.yaml ] && rm /tmp/template.deploy.yaml
+                        [ -f /tmp/parameters.yaml ] && rm /tmp/parameters.yaml
 
-                        stackName=$(cat $p | jq -rc .stackName)
-                        templateFilePath=$(cat $p | jq -rc .templateFilePath)
-                        parameters=$(cat $p | jq -rc .parameters)
+                        stackName=$(cat $p | jq -rc .StackName)
+                        templateFilePath=$(cat $p | jq -rc .TemplateFilePath)
+                        parameters=$(cat $p | jq -rc .Parameters)
 
                         [ -n "$stackName" ] || continue
                         echo "Stack Name: " $stackName
