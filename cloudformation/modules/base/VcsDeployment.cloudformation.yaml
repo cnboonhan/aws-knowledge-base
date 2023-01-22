@@ -114,9 +114,9 @@ Resources:
                         echo "Checking if Stack with name $stackName exists.."
                         aws cloudformation describe-stacks --stack-name "$stackName" > /tmp/null
                         if [ $? -eq 0 ]; then
-                          aws cloudformation update-stack --template-body file:///tmp/template.deploy.yaml --stack-name "$stackName" --capabilities CAPABILITY_IAM
+                          aws cloudformation update-stack --template-body file:///tmp/template.deploy.yaml --stack-name "$stackName" --capabilities CAPABILITY_IAM --parameters "$parameters"
                         else
-                          aws cloudformation create-stack --template-body file:///tmp/template.deploy.yaml --stack-name "$stackName" --capabilities CAPABILITY_IAM
+                          aws cloudformation create-stack --template-body file:///tmp/template.deploy.yaml --stack-name "$stackName" --capabilities CAPABILITY_IAM --parameters "$parameters"
                         fi
                       done <.changes
           - VcsCloudformationTemplateRepositoryRefName: !GetAtt VcsCloudformationTemplateRepository.Name
