@@ -1,0 +1,30 @@
+AWSTemplateFormatVersion: 2010-09-09
+
+Resources:
+  NullString:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: NullString
+      Type: String
+      Value: "null"
+
+  WildCardString:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: WildCardString
+      Type: String
+      Value: "*"
+
+  NullStringList:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: NullStringList
+      Type: StringList
+      Value: "null,null"
+
+  RootUserArnStringList:
+    Type: AWS::SSM::Parameter
+    Properties:
+      Name: RootUserArnStringList
+      Type: StringList
+      Value: !Sub arn:aws:iam::${AWS::AccountId}:root

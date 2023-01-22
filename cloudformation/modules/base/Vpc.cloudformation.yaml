@@ -12,11 +12,17 @@ Parameters:
 
 Conditions:
   BuildSubnetGroupB:
-    !Or [
-      !Equals [!Ref NumberOfSubnetsToCreate, 4],
-      !Equals [!Ref NumberOfSubnetsToCreate, 8],
-    ]
-  BuildSubnetGroupCD: !Equals [!Ref NumberOfSubnetsToCreate, 8]
+    - !Or
+      - !Equals
+        - !Ref NumberOfSubnetsToCreate
+        - 4
+      - !Equals
+        - !Ref NumberOfSubnetsToCreate
+        - 8
+  BuildSubnetGroupCD: 
+    - !Equals
+      - !Ref NumberOfSubnetsToCreate
+      - 8
 
 Resources:
   BaseVPC:
@@ -32,7 +38,8 @@ Resources:
     Properties:
       VpcId: !Ref BaseVPC
       CidrBlock: 10.0.0.0/19
-      AvailabilityZone: !Select 
+      AvailabilityZone: 
+        !Select 
         - 0
         - Fn::GetAZs: !Ref 'AWS::Region'
 

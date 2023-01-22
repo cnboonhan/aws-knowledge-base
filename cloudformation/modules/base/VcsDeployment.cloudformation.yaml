@@ -20,6 +20,12 @@ Resources:
       Source:
         Type: CODECOMMIT
         Location: !GetAtt VcsDeploymentRepository.CloneUrlHttp
+        BuildSpec: |
+          version: 0.1
+          phases:
+            build:
+              commands:
+                - aws cloudformation describe-stacks
 
   VcsDeploymentPipelineRole:
     Type: AWS::IAM::Role
@@ -35,3 +41,4 @@ Resources:
       ManagedPolicyArns:
         - arn:aws:iam::aws:policy/AWSCodeCommitReadOnly
         - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
+        - arn:aws:iam::aws:policy/AWSCloudFormationFullAccess
