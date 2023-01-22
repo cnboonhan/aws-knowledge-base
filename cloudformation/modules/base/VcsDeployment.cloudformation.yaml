@@ -113,7 +113,7 @@ Resources:
                         echo "Checking if $stackName exists.."
                         aws cloudformation describe-stacks --stack-name "$stackName" > /tmp/null
                         if [ $? -eq 0 ]; then
-                          aws cloudformation update-stack --template-body file:///tmp/te/tmp/plate.deploy.yaml --stack-name "$stackName" --capabilities CAPABILITY_IAM
+                          aws cloudformation update-stack --template-body file:///tmp/template.deploy.yaml --stack-name "$stackName" --capabilities CAPABILITY_IAM
                         else
                           aws cloudformation create-stack --template-body file:///tmp/template.deploy.yaml --stack-name "$stackName" --capabilities CAPABILITY_IAM
                         fi
