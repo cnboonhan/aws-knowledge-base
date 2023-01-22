@@ -11,18 +11,16 @@ Parameters:
     Description: Number of Subnets we wish to create in this VPC.
 
 Conditions:
-  BuildSubnetGroupB:
-    - !Or
-      - !Equals
-        - !Ref NumberOfSubnetsToCreate
-        - 4
-      - !Equals
-        - !Ref NumberOfSubnetsToCreate
-        - 8
-  BuildSubnetGroupCD: 
+  BuildSubnetGroupB: !Or
+    - !Equals
+      - !Ref NumberOfSubnetsToCreate
+      - 4
     - !Equals
       - !Ref NumberOfSubnetsToCreate
       - 8
+  BuildSubnetGroupCD: !Equals
+    - !Ref NumberOfSubnetsToCreate
+    - 8
 
 Resources:
   BaseVPC:
