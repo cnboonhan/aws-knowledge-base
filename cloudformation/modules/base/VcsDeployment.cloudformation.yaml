@@ -1,10 +1,15 @@
 AWSTemplateFormatVersion: 2010-09-09
 
 Resources:
-  VcsDeploymentRepository:
+  VcsCloudformationTemplateRepository:
     Type: AWS::CodeCommit::Repository
     Properties:
-      RepositoryName: !Sub Vcs-${AWS::AccountId}
+      RepositoryName: !Sub VcsCloudformationTemplate-${AWS::AccountId}
+
+  VcsCloudformationDeploymentRepository:
+    Type: AWS::CodeCommit::Repository
+    Properties:
+      RepositoryName: !Sub VcsCloudformationDeployment-${AWS::AccountId}
 
   VcsDeploymentPipeline:
     Type: AWS::CodeBuild::Project
@@ -19,7 +24,7 @@ Resources:
         Image: aws/codebuild/standard:6.0
       Source:
         Type: CODECOMMIT
-        Location: !GetAtt VcsDeploymentRepository.CloneUrlHttp
+        Location: !GetAtt VcsCloudformationDeploymentRepository.CloneUrlHttp
         BuildSpec: |
           version: 0.1
           phases:
