@@ -1,6 +1,27 @@
 AWSTemplateFormatVersion: 2010-09-09
 
 Resources:
+  DeployS3Bucket:
+    Type: AWS::S3::Bucket
+    DeletionPolicy: Delete
+    Properties:
+      BucketName: !Sub deploy-${AWS::AccountId}
+
+  DeployS3BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      Bucket: !Ref DeployS3Bucket
+      PolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Action:
+              - "s3:GetObject"
+              - "s3:PutObject"
+            Effect: Allow
+            Resource: !Sub "arn:aws:s3:::${DeployS3Bucket}/*"
+            Principal:
+              AWS: !GetAtt VcsDeploymentCodeBuildProjectRole.Arn
+
   VcsCloudformationTemplateRepository:
     Type: AWS::CodeCommit::Repository
     Properties:
@@ -11,28 +32,7 @@ Resources:
     Properties:
       RepositoryName: !Sub VcsCloudformationDeployment-${AWS::AccountId}
 
-  VcsDeploymentPipeline:
-    Type: AWS::CodeBuild::Project
-    Properties:
-      Artifacts:
-        Type: NO_ARTIFACTS
-      ServiceRole: !GetAtt VcsDeploymentPipelineRole.Arn
-      Name: VcsDeploymentPipeline
-      Environment:
-        Type: LINUX_CONTAINER
-        ComputeType: BUILD_GENERAL1_SMALL
-        Image: aws/codebuild/standard:6.0
-      Source:
-        Type: CODECOMMIT
-        Location: !GetAtt VcsCloudformationDeploymentRepository.CloneUrlHttp
-        BuildSpec: |
-          version: 0.1
-          phases:
-            build:
-              commands:
-                - aws cloudformation describe-stacks
-
-  VcsDeploymentPipelineRole:
+  VcsDeploymentCodeBuildProjectRole:
     Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
@@ -47,3 +47,64 @@ Resources:
         - arn:aws:iam::aws:policy/AWSCodeCommitReadOnly
         - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
         - arn:aws:iam::aws:policy/AWSCloudFormationFullAccess
+
+  CodeBuildStartBuildRoleForCloudwatchEvents:
+    Type: AWS::IAM::Role
+
+    Properties:
+      AssumeRolePolicyDocument:
+        Statement:
+          - Action: ["sts:AssumeRole"]
+            Effect: Allow
+            Principal:
+              Service: [events.amazonaws.com]
+        Version: "2012-10-17"
+      Path: /
+      ManagedPolicyArns:
+        - arn:aws:iam::aws:policy/AWSCodeBuildDeveloperAccess
+
+  VcsDeploymentCodeBuildProject:
+    Type: AWS::CodeBuild::Project
+    Properties:
+      Artifacts:
+        Type: NO_ARTIFACTS
+      ServiceRole: !GetAtt VcsDeploymentCodeBuildProjectRole.Arn
+      Name: VcsDeploymentCodeBuildProject
+      Environment:
+        Type: LINUX_CONTAINER
+        ComputeType: BUILD_GENERAL1_SMALL
+        Image: aws/codebuild/standard:6.0
+      Source:
+        Type: CODECOMMIT
+        Location: !GetAtt VcsCloudformationDeploymentRepository.CloneUrlHttp
+        BuildSpec: !Sub
+          - |
+            version: 0.1
+            phases:
+              build:
+                commands:
+                  - git diff --name-status $CODEBUILD_WEBHOOK_BASE_REF
+                  #- "aws codecommit get-file --repository-name ${VcsCloudformationTemplateRepositoryRefName} --file-path README.md --query fileContent --output text | base64 -d"
+          - VcsCloudformationTemplateRepositoryRefName: !GetAtt VcsCloudformationDeploymentRepository.Name
+
+  VcsCloudformationDeploymentCommitEvent:
+    Type: AWS::Events::Rule
+    Properties:
+      Description: Trigger CodeBuild for cloudformation deployments on pushes to the deployment repository.
+      State: ENABLED
+      EventPattern:
+        source:
+          - aws.codecommit
+        detail-type:
+          - CodeCommit Repository State Change
+        detail:
+          repositoryId: 
+            - !Ref VcsCloudformationDeploymentRepository
+          referenceType: 
+            - branch
+          referenceName: 
+            - main
+      Targets:
+        - Arn: !GetAtt VcsDeploymentCodeBuildProject.Arn
+          RoleArn: !GetAtt CodeBuildStartBuildRoleForCloudwatchEvents.Arn
+          Id: VcsDeploymentCodeBuildProject
