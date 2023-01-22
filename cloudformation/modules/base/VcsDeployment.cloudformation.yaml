@@ -48,6 +48,7 @@ Resources:
         - arn:aws:iam::aws:policy/CloudWatchLogsFullAccess
         - arn:aws:iam::aws:policy/AWSCloudFormationFullAccess
         - arn:aws:iam::aws:policy/AmazonSSMFullAccess
+        - arn:aws:iam::aws:policy/AmazonVPCFullAccess
 
   CodeBuildStartBuildRoleForCloudwatchEvents:
     Type: AWS::IAM::Role
