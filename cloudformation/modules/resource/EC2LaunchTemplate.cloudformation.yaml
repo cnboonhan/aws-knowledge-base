@@ -54,7 +54,7 @@ Resources:
               VolumeType: gp2
               DeleteOnTermination: true
               Encrypted: true
-            DeviceName: /dev/sda
+            DeviceName: /dev/xvda
         Monitoring:
           Enabled: true
         ImageId: !Ref InstanceAmiId
