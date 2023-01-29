@@ -18,7 +18,7 @@ Parameters:
   InstanceAmiId:
     Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
     Description: InstanceType to create EC2 from.
-    Default: LatestAmazonAmiId
+    Default: AmazonLinuxAmiId 
 
 Resources:
   LaunchTemplateRole:
