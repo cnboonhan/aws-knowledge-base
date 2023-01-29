@@ -1,10 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 
 Parameters:
-  LaunchTemplateName:
-    Type: String
-    Description: Name of LaunchTemplate.
-
   EBSVolumeSize:
     Type: Number
     Default: 20
@@ -20,7 +16,7 @@ Parameters:
     Description: InstanceType to create EC2 from.
 
   InstanceAmiId:
-    Type: AWS::SSM::Parameter::Value<String>
+    Type: AWS::SSM::Parameter::Value<EC2::Image::Id>
     Description: InstanceType to create EC2 from.
     Default: LatestAmazonAmiId
 
