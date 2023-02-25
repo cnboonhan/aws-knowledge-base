@@ -4,17 +4,21 @@ shopt -s globstar
 : ${PRE_COMMIT_HOOK_DEPLOY_URL:=https://cnboonhan.github.io/aws-knowledge-base}
 
 if [ -x "$(command -v cfn-dia)" ]; then 
+    [ -d docs ] && rm -r docs 
+    mkdir docs
+
     echo '<ul>' > docs/index.html
     echo "Generating diagrams..."
     for i in cdk/*; do
         NAME="${i##*/}"
         cd $i
         cfn-diagram html -t "cdk.json" -o "/tmp/$NAME"
-        cd -
+        cd - > /dev/null
         mv "/tmp/$NAME"  "docs/$NAME"
-        LINK_NAME="$PRE_COMMIT_HOOK_DEPLOY_URL/$i"
+        LINK_NAME="$PRE_COMMIT_HOOK_DEPLOY_URL/docs/$NAME"
         echo "<li><a href=\"$LINK_NAME\">$LINK_NAME</a></li>" >> docs/index.html
     done
+
     echo '</ul>' >> docs/index.html
     git add "docs"
 else
