@@ -15,7 +15,7 @@ if [ -x "$(command -v cfn-dia)" ]; then
         cfn-diagram html -t "cdk.json" -o "/tmp/$NAME"
         cd - > /dev/null
         mv "/tmp/$NAME"  "docs/$NAME"
-        LINK_NAME="$PRE_COMMIT_HOOK_DEPLOY_URL/docs/$NAME"
+        LINK_NAME="$PRE_COMMIT_HOOK_DEPLOY_URL/$NAME"
         echo "<li><a href=\"$LINK_NAME\">$LINK_NAME</a></li>" >> docs/index.html
     done
 
