@@ -3,20 +3,16 @@ shopt -s globstar
 
 : ${PRE_COMMIT_HOOK_DEPLOY_URL:=https://cnboonhan.github.io/aws-knowledge-base}
 
-if [ -x "$(command -v cfn-lint)" ]; then 
-    cfn-lint cloudformation/**/*.cloudformation.yaml
-    git add "cloudformation"
-else
-    echo "No cfn-lint found. Skipping linting.."
-fi
-
 if [ -x "$(command -v cfn-dia)" ]; then 
     echo '<ul>' > docs/index.html
     echo "Generating diagrams..."
-    for i in cloudformation/**/*.cloudformation.yaml; do
+    for i in cdk/*; do
         NAME="${i##*/}"
-        cfn-diagram html -t "$i" -o "docs/$NAME"
-        LINK_NAME="$PRE_COMMIT_HOOK_DEPLOY_URL/$NAME"
+        cd $i
+        cfn-diagram html -t "cdk.json" -o "/tmp/$NAME"
+        cd -
+        mv "/tmp/$NAME"  "docs/$NAME"
+        LINK_NAME="$PRE_COMMIT_HOOK_DEPLOY_URL/$i"
         echo "<li><a href=\"$LINK_NAME\">$LINK_NAME</a></li>" >> docs/index.html
     done
     echo '</ul>' >> docs/index.html

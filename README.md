@@ -12,4 +12,3 @@ find $PWD/hooks -type f | xargs -I '{}' ln -s '{}' $PWD/.git/hooks
 Currently implemented hooks:
 * **CFN Diagram Auto-Generation**
     * Uses `cfn-diagram` to generate Cloudformation diagrams in `docs`, from templates in `cloudformation`. Hosted at `https://cnboonhan.github.io/aws-knowledge-base`. To host at another url, set the `PRE_COMMIT_HOOK_DEPLOY_URL` environment variable when commiting. ( see `hooks/pre-commit` for more details )
-* **CFN Template Linting**
