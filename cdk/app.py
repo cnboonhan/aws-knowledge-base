@@ -11,8 +11,9 @@ import lib.cicd.buildspec_definitions as buildspec_definitions
 app = cdk.App()
 
 VpcStack(app, "Vpc")
-CicdStack(app, "SampleBackend",
+
+CicdStack(app, "CICDSampleBackend",
           buildspec=buildspec_definitions.backend_buildspec)
-CicdStack(app, "SampleWeb", buildspec=buildspec_definitions.web_buildspec)
+CicdStack(app, "CICDSampleWeb", buildspec=buildspec_definitions.web_buildspec)
 
 app.synth()
