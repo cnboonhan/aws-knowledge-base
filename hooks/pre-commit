@@ -8,7 +8,9 @@ if [ -x "$(command -v cfn-dia)" ]; then
     mkdir docs
 
     echo "Generating diagrams..."
-    cfn-diagram html -t "/cdk/cdk.json" -o "docs"
+    cd cdk
+    cfn-diagram html -s -co cdk.out -o ../docs
+    cd - > /dev/null
 
     git add "docs"
 else
