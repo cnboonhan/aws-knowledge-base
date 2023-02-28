@@ -10,7 +10,7 @@ import lib.cicd.buildspec_definitions as buildspec_definitions
 
 app = cdk.App()
 
-VpcStack(app, "Vpc")
+VpcStack(app, "BaseVpc")
 
 CicdStack(app, "CICDSampleBackend",
           buildspec=buildspec_definitions.backend_buildspec)
